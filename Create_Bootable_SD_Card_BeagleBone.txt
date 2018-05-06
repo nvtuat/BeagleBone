@@ -1,0 +1,90 @@
+- Preconditions
+You need a Linux host PC, a micro SD card and USB SD card reader in order to prepare the image. Most of the following commands require root priviledges so it is recommended to execute them as user root.
+
+- Partition and Format the SD Card
+These steps need to be done only once. The SD card needs to provide two primary partitions. The first one carries the bootloader, the second one the Linux kernel and the user land file system.
+
+- Identify SD Device File
+Before you insert the card reader equipped with the SD card where the new image is going to be installed, open up a shell on the Linux host and enter
+
+ tail -f /var/log/kern.log
+Insert the card reader to the Linux host and observe the log output which shall be similar to this:
+
+ kernel: sd 35:0:0:0: [sdb] 61497344 512-byte logical blocks: (31.4 GB/29.3 GiB)
+ kernel: sd 35:0:0:0: [sdb] Write Protect is off
+ ...
+ kernel:  sdb: sdb1 sdb2
+That means the SD card can be accessed under /dev/sdb. In the example above the card has been already partitioned which is the reason why sdb1 and sdb2 are present as well. Nevertheless the following two steps taken from http://www.armhf.com/boards/beaglebone-black/bbb-sd-install/ explain this.
+
+- Setup Partitions on SD Card
+Start the fdisk console application with the following command:
+
+ fdisk /dev/sdX
+where /dev/sdX denotes the device file as indicated under point 1. Now create the a new partition table by following these steps:
+
++ Initialize a new partition table by selecting o, then verify the partition table is empty by selecting p.
++ Create a boot partition by selecting n for ‘new’, then p for ‘primary’, and 1 to specify the first partition. Press enter to accept the default first sector and specify +72261K for specifying the size in kilobytes.
++ Change the partition type to FAT16 by selecting t for ‘type’ and c for ‘W95 FAT32 (LBA)’.
++ Set the partition bootable by selecting a then 1.
++ Next, create the data partition for the root filesystem by selecting n for ‘new’, then p for ‘primary’, and 2 to specify the second partition. Accept the default values for the first and last sectors by pressing enter twice.
++ Press p to ‘print’ the partition table. It should look similar to the one below.
++ Finally, commit the changes by selecting w to ‘write’ the partition table and exit fdisk.
+ 
+ Disk /dev/sdb: 7948 MB, 7948206080 bytes
+ 255 heads, 63 sectors/track, 966 cylinders, total 15523840 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 512 bytes
+ I/O size (minimum/optimal): 512 bytes / 512 bytes
+ Disk identifier: 0xafb3f87b
+ .
+    Device Boot      Start         End      Blocks   Id  System
+ /dev/sdb1   *        2048      146569       72261    c  W95 FAT32 (LBA)
+ /dev/sdb2          146570    15759359     7806395   83  Linux
+
+- Format the Partitions
+Before formatting unplug and plug again the SD card respectively the USB card reader to allow the driver stack to correctly discover the filesystem partitions. Check that the SD card does still use the same device files as in the given example /dev/sdb by watching the output of tail -f /var/log/messages.Then enter the following commands to create the required filesystems:
+
+ mkfs.vfat  -F 16 -n "boot" /dev/sdb1
+ mke2fs -j -L "root" /dev/sdb2
+Create Mount Point Directories
+In order to mount the filesystems of newly created partitions on the SD card to the filesystem on the Linux host you need to create two mount point directories. We recommend to put them under the directory mount with the following commands:
+
+ mkdir /mnt/sd1
+ mkdir /mnt/sd2   
+
+- Mount Partitions on SD Card
+Whenever you insert the SD card or after having successfully executed the steps above you have to mount the directories on the SD card by the following commands:
+
+ mount /dev/sdb1 /mnt/sd1
+ mount /dev/sdb2 /mnt/sd2
+
+- In case the partitions on the SD cards contain already some data you might want to remove it first before actually applying a new or updated image:
+
+ rm -rf /mnt/sd1/*
+ rm -rf /mnt/sd2/*
+IN the majority of the cases you will exclusively change the Linux kernel or the content on the Linux file system image. In this case you can keep the first parition as it is and only update the content of the second one.
+
+- Install the Image Data
+The following instructions assume that your SD card partitions can be accessed under /dev/sdb1 and /dev/sdb2 as in the example above. It is possible that the SD card uses a different device file on your system which in this case must be used instead. Refer to the first step for further details.
+
+- After successfull build all image data can be found under
+
+ ##project_root_folder##/build/tmp-eglibc/deploy/images/
+
+- Boot Loaders
+Install the boot loaders:
+
+ cp MLO-beaglebone /mnt/sd1/MLO
+ cp u-boot-beaglebone.img /mnt/sd1/u-boot.img
+
+- Root File System
+Install the root filesystem:
+
+ tar x -C /mnt/sd2 -f $IMAGE_TYPE-beaglebone.tar.gz
+where $IMAGE_TYPE currently denotes to ltenad2 for the standard CDC-RNDIS configuration used with the manufactures images for BeagleBone black or ltenad2-cdc-ncm for the more efficient and modified CDC-NCM drivers as used in connectivity modules based on MDM9640.
+
+- Unmount the SD Card
+Whenever you remove the SD card from the host PC you have to unmount its partitions with the following commands:
+
+ umount /mnt/sd1
+ umount /mnt/sd2
