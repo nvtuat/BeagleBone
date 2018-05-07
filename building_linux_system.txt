@@ -1,0 +1,2 @@
+http://www.bootembedded.com/beagle-bone-black/building-embedded-linux-system-using-mainline-kernel-for-beaglebone-black/
+https://eewiki.net/display/linuxonarm/BeagleBone+Black
