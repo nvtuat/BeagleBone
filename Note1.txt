@@ -1,0 +1,17 @@
+Embedded Linux common training: https://bootlin.com/doc/training/embedded-linux/
+Embedded Linux with BeagleBone: http://derekmolloy.ie/
+BeagleBone wiki (how to build images): https://eewiki.net/display/linuxonarm/BeagleBone+Black
+
+What points have to know: 
++ What is Embbedded Linux ?
++ What is bootloader ?
++ What is device tree ?
++ What is Linux kernel ?
++ What is filesystem ?
++ What is device driver ?
+
+For programming:
+- Beginning Linux Programming, The Linux Programming Interface (book)
+	+ C programming, shell script programming.
+	+ Makefile ?, toolchain ?
+	=> Build a simple hello world program (by C code) with gcc compiler and a similar program by shell script.
