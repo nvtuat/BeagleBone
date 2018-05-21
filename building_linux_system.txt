@@ -1,2 +1,4 @@
 http://www.bootembedded.com/beagle-bone-black/building-embedded-linux-system-using-mainline-kernel-for-beaglebone-black/
 https://eewiki.net/display/linuxonarm/BeagleBone+Black
+https://forum.digikey.com/t/beaglebone-blue-getting-started/350
+http://processors.wiki.ti.com/index.php/Linux_Core_U-Boot_User%27s_Guide?keyMatch=u-boot%20user%27s%20guide&tisearch=Search-EN-Everything
