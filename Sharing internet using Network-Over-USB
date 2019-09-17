@@ -12,10 +12,10 @@ route add default gw 192.168.7.1
 In the linux console of host system type
 
 sudo su
-#wlan0 is my internet facing interface, eth5 is the BeagleBone USB connection
-ifconfig eth5 192.168.7.1
-iptables --table nat --append POSTROUTING --out-interface wlan0 -j MASQUERADE
-iptables --append FORWARD --in-interface eth5 -j ACCEPT
+#wlp3s0 is my internet facing interface, eth5 is the BeagleBone USB connection
+ifconfig enx84eb189c072b 192.168.7.1
+iptables --table nat --append POSTROUTING --out-interface wlp3s0 -j MASQUERADE
+iptables --append FORWARD --in-interface enx84eb189c072b -j ACCEPT
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
 Incase network not accessible then type the following in BBB terminal
