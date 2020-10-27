@@ -1,1 +1,15 @@
-https://happilyembedded.wordpress.com/2015/09/02/file-transfer-between-beaglebone-black-and-ubuntu-pc-via-ssh/
+Copying file
+
+syntax:scp <file-path> dest_username@dest_host_IP:/home/dest_username
+copy file from UBUNTU PC to BBB
+sudo scp examples/example.c root@192.168.7.2:/home/root
+copy file from BBB to UBUNTU PC
+scp pics/pic.jpg dtsuser@192.168.7.1:/home/dtsuser
+
+Copying entire directory
+
+syntax:scp -r <directory> dest_username@dest_host_IP:/home/dest_username
+copy entire directory from UBUNTU PC to BBB
+sudo scp -r examples root@192.168.7.2:/home/root
+copy entire directory from BBB to UBUNTU PC
+sudo scp -r pics dtsuser@192.168.7.1:/home/dtsuser
