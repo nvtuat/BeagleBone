@@ -1,0 +1,10 @@
+console=ttyO0,115200n8
+ipaddr=192.168.0.2
+serverip=192.168.0.104
+absolutepath=/var/lib/tftpboot/
+loadramfsaddr=0x88080000
+dtbfile=am335x-boneblack.dtb
+loadtftp=echo Booting from network ...;tftpboot ${loadaddr} uImage; tftpboot ${fdtaddr} ${dtbfile};
+netargs=setenv bootargs console=ttyO0,115200n8 root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait debug earlyprintk mem=512M
+uenvcmd=setenv autoload no; run loadtftp; run netargs; bootm ${loadaddr} - ${fdtaddr}
+

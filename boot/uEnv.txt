@@ -1,0 +1,10 @@
+console=ttyO0,115200n8
+ipaddr=192.168.0.2
+serverip=192.168.0.104
+absolutepath=/var/lib/tftpboot/
+loadramfsaddr=0x88080000
+fdtfile=am335x-boneblack-uboot-univ.dtb
+loadtftp=echo Booting from network ...;tftpboot ${loadaddr} uImage; tftpboot ${fdtaddr} ${fdtfile}; tftpboot ${loadramfsaddr} initramfs
+netargs=setenv bootargs console=${console} root=/dev/ram0 rw initrd=0x88080000
+uenvcmd=setenv autoload no; run loadtftp; run netargs; bootm ${loadaddr} ${loadramfsaddr} ${fdtaddr}
+
